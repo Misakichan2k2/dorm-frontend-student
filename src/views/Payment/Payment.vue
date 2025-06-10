@@ -6,7 +6,7 @@ const router = useRouter();
 
 const success = route.query.success === "true";
 
-const goHome = () => {
+const goInvoice = () => {
   router.push("/receipt");
 };
 </script>
@@ -20,7 +20,7 @@ const goHome = () => {
 <template>
   <v-container
     class="d-flex align-center justify-center"
-    style="padding-top: 6rem"
+    style="padding-top: 7rem"
   >
     <v-card class="pa-10">
       <div class="text-center w-100" style="max-width: 500px">
@@ -44,9 +44,12 @@ const goHome = () => {
 
         <v-divider class="my-6"></v-divider>
 
-        <div class="d-flex justify-center gap-4">
-          <v-btn color="primary" elevation="0" @click="goHome"
+        <div class="d-flex justify-center ga-4">
+          <v-btn color="primary" elevation="0" @click="goInvoice"
             >Trang hóa đơn</v-btn
+          >
+          <v-btn color="primary" variant="outlined" @click="goInvoice"
+            >Thử lại</v-btn
           >
         </div>
       </div>

@@ -5,7 +5,7 @@ export default [
     component: () => import("../Payment.vue"),
   },
   {
-    path: "/payment-result-registration",
+    path: "/payment-result-request",
     name: "PaymentRegistration",
     component: () => import("../PaymentRegistration.vue"),
   },

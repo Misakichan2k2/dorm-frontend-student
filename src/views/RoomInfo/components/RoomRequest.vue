@@ -27,9 +27,13 @@ const getStatusColor = (status) => {
     case "approved":
       return "green";
     case "pending":
-      return "orange";
+      return "blue";
     case "unpaid":
+      return "orange";
+    case "rejected":
       return "red";
+    case "refunded":
+      return "yellow";
     default:
       return "grey";
   }
@@ -43,8 +47,14 @@ const getStatusLabel = (status) => {
       return "Chờ xác nhận";
     case "unpaid":
       return "Chưa thanh toán";
-    default:
+    case "rejected":
+      return "Từ chối";
+    case "refunded":
+      return "Hoàn tiền";
+    case "canceled":
       return "Bị hủy";
+    default:
+      return "Không xác định";
   }
 };
 
@@ -141,8 +151,10 @@ onMounted(async () => {
               </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <template v-if="registration.status === 'unpaid'">
-                  <div class="d-flex mb-5 align-center justify-space-between">
-                    <span style="font-size: 0.8rem">{{
+                  <div
+                    class="d-flex mb-5 ga-5 align-center justify-space-between"
+                  >
+                    <span style="font-size: 1rem">{{
                       registration.registerFormDetail
                     }}</span>
                     <v-btn

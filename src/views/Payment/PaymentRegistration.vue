@@ -6,7 +6,7 @@ const router = useRouter();
 
 const success = route.query.success === "true";
 
-const goHome = () => {
+const goRoom = () => {
   router.push("/room-info");
 };
 </script>
@@ -20,7 +20,7 @@ const goHome = () => {
 <template>
   <v-container
     class="d-flex align-center justify-center"
-    style="padding-top: 8rem"
+    style="padding-top: 7rem"
   >
     <v-card class="pa-10">
       <div class="text-center w-100" style="max-width: 500px">
@@ -44,9 +44,12 @@ const goHome = () => {
 
         <v-divider class="my-6"></v-divider>
 
-        <div class="d-flex justify-center gap-4">
-          <v-btn color="primary" elevation="0" @click="goHome"
-            >Xem đơn đăng ký</v-btn
+        <div class="d-flex justify-center ga-4">
+          <v-btn color="primary" elevation="0" @click="goRoom"
+            >Thông tin phòng</v-btn
+          >
+          <v-btn color="primary" variant="outlined" @click="goRoom"
+            >Thử lại</v-btn
           >
         </div>
       </div>

@@ -40,7 +40,6 @@ const onLogout = () => {
 
     <!-- Menu items -->
     <v-list density="compact" nav>
-      <v-list-item prepend-icon="mdi-home-city" title="Trang chủ" :to="'/'" />
       <v-list-item
         prepend-icon="mdi-account"
         title="Thông tin cá nhân"
@@ -64,6 +63,11 @@ const onLogout = () => {
       <v-list-item
         prepend-icon="mdi-message-processing"
         title="Ý kiến phản hồi"
+        :to="'/feedback'"
+      />
+      <v-list-item
+        prepend-icon="mdi-cog"
+        title="Đổi mật khẩu"
         :to="'/feedback'"
       />
     </v-list>
