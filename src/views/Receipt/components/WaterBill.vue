@@ -91,7 +91,7 @@ onMounted(async () => {
 <template>
   <v-card flat class="pa-4">
     <div class="text-center text-h5 font-weight-bold mb-4 text-blue-darken-3">
-      Danh sách hóa đơn điện
+      Danh sách hóa đơn nước
     </div>
 
     <v-row>

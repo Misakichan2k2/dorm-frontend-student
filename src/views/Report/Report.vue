@@ -227,12 +227,46 @@ onMounted(async () => {
                 {{ item.status }}
               </v-chip>
             </td>
+            <!-- <td class="text-center">
+              <v-btn
+                v-if="item.status === 'Chờ xử lý'"
+                color="red-darken-2"
+                size="small"
+                elevation="0"
+                variant="outlined"
+                @click="activeMenuId = item._id"
+              >
+                Hủy đơn
+              </v-btn>
+
+              <v-card
+                v-if="activeMenuId === item._id"
+                min-width="300"
+                class="pa-2"
+              >
+                <v-card-text class="text-center text-body-1 font-weight-medium">
+                  Bạn có muốn hủy đơn báo cáo không?
+                </v-card-text>
+
+                <v-divider></v-divider>
+
+                <v-card-actions class="justify-end">
+                  <v-btn variant="text"> Không </v-btn>
+                  <v-btn
+                    color="error"
+                    variant="text"
+                    @click="cancelReport(item._id)"
+                  >
+                    Xác nhận
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </td> -->
             <td class="text-center">
               <v-menu
-                v-model="activeMenuId"
+                v-if="item.status === 'Chờ xử lý'"
                 :close-on-content-click="false"
                 location="bottom"
-                v-if="item.status === 'Chờ xử lý'"
               >
                 <template v-slot:activator="{ props }">
                   <v-btn
@@ -241,13 +275,17 @@ onMounted(async () => {
                     elevation="0"
                     variant="outlined"
                     v-bind="props"
-                    @click="activeMenuId = item.reportId"
+                    @click="activeMenuId = item._id"
                   >
                     Hủy đơn
                   </v-btn>
                 </template>
 
-                <v-card min-width="300" class="pa-2">
+                <v-card
+                  v-if="activeMenuId === item._id"
+                  min-width="300"
+                  class="pa-2"
+                >
                   <v-card-text
                     class="text-center text-body-1 font-weight-medium"
                   >

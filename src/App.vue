@@ -1,17 +1,23 @@
 <script setup>
 import Header from "./components/Header.vue";
 import Navbar from "./components/Navbar.vue";
+import { appLocalStorage } from "./utils";
+import PopupMessage from "./components/PopupMessage.vue";
 </script>
 
 <template>
   <v-app>
+    <PopupMessage />
     <!-- Sidebar cố định -->
-    <Navbar />
+    <Navbar v-if="appLocalStorage?.accessToken" />
 
     <!-- Nội dung chính -->
     <v-main class="d-flex flex-column background">
-      <Header />
-      <div class="content flex-grow-1 bg-grey-lighten-4">
+      <Header v-if="appLocalStorage?.accessToken" />
+      <div
+        class="flex-grow-1 bg-grey-lighten-4"
+        :class="{ content: appLocalStorage?.accessToken }"
+      >
         <router-view />
       </div>
     </v-main>
