@@ -45,12 +45,13 @@ const goRoom = () => {
         <v-divider class="my-6"></v-divider>
 
         <div class="d-flex justify-center ga-4">
-          <v-btn color="primary" elevation="0" @click="goRoom"
-            >Thông tin phòng</v-btn
+          <v-btn
+            color="primary"
+            :variant="success ? 'elevated' : 'outlined'"
+            @click="goRoom"
           >
-          <v-btn color="primary" variant="outlined" @click="goRoom"
-            >Thử lại</v-btn
-          >
+            {{ success ? "Đơn đăng ký" : "Thử lại" }}
+          </v-btn>
         </div>
       </div>
     </v-card>

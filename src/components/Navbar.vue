@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { onDeleteAppLocalStorage } from "@/utils";
+import { appLocalStorage, onDeleteAppLocalStorage } from "@/utils";
 
 const drawer = ref(true);
 const rail = ref(false);
@@ -39,7 +39,11 @@ const onLogout = () => {
     <v-divider />
 
     <!-- Menu items -->
-    <v-list density="compact" nav>
+    <v-list
+      v-if="appLocalStorage?.userData?.hasRegistration"
+      density="compact"
+      nav
+    >
       <v-list-item
         prepend-icon="mdi-account"
         title="Thông tin cá nhân"
@@ -68,7 +72,7 @@ const onLogout = () => {
       <v-list-item
         prepend-icon="mdi-cog"
         title="Đổi mật khẩu"
-        :to="'/feedback'"
+        :to="'/change-password'"
       />
     </v-list>
 

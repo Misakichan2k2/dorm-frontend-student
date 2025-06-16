@@ -20,8 +20,22 @@ export const StoreAuth = defineStore("StoreAuth", () => {
     });
   };
 
+  const onActionHasRegistration = async () => {
+    return await setup({
+      apiFunction: API.hasRegistration(),
+    });
+  };
+
+  const onActionChangePassword = async (data) => {
+    return await setup({
+      apiFunction: API.changePassword(data),
+    });
+  };
+
   return {
     onActionSignIn,
     onActionSignUp,
+    onActionHasRegistration,
+    onActionChangePassword,
   };
 });

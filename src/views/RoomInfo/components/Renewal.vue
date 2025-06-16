@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, onMounted } from "vue";
 import {
   addMonths,
   format,
@@ -7,151 +7,233 @@ import {
   startOfMonth,
   endOfMonth,
 } from "date-fns";
+import { STORE_ROOM_INFO } from "@/services/stores";
 
-const building = "A";
-const room = "101";
-const currentEndDate = "2025-06-30"; // Ngày kết thúc hiện tại của kỳ thuê cuối cùng
+const { onActionGetMyRenewals, onActionCreateRenewal, onActionCreateVnpayUrl } =
+  STORE_ROOM_INFO.StoreRoomInfo();
 
-const renewalData = ref([
-  {
-    month: "07/2025",
-    startDate: "01/07/2025",
-    endDate: "31/07/2025",
-    paidAt: "02/07/2025",
-    status: "Đã duyệt",
-    note: "",
-  },
-  {
-    month: "08/2025",
-    startDate: "01/08/2025",
-    endDate: "31/08/2025",
-    paidAt: null,
-    status: null,
-    note: null,
-  },
-]);
-
+const renewalData = ref([]);
+const student = ref(null);
 const showDialog = ref(false);
+
 const nextRenewalMonth = ref("");
 const nextStartDate = ref("");
 const nextEndDate = ref("");
-const rentPrice = 1200000; // Tiền thuê cố định, có thể lấy từ room.price nếu có
+
+const snackbar = ref(false);
+const snackbarMessage = ref("");
+const snackbarColor = ref("success");
+
+// Headers định nghĩa cho bảng
+const headers = [
+  { title: "STT", key: "index", sortable: false, align: "center" },
+  { title: "Tháng gia hạn", value: "month", align: "center" },
+  { title: "Trạng thái", value: "status", align: "center" },
+  { title: "Ghi chú", value: "notes", align: "center", maxWidth: "12rem" },
+  { title: "Hành động", value: "action", align: "center" },
+];
+
+const fetchRenewalRequests = async () => {
+  await onActionGetMyRenewals().then((res) => {
+    renewalData.value = res?.data?.data || [];
+    student.value = res?.data?.student;
+  });
+};
+
+const formatStatus = (status) => {
+  switch (status) {
+    case "unpaid":
+      return "Chưa thanh toán";
+    case "pending":
+      return "Chờ duyệt";
+    case "approved":
+      return "Đã duyệt";
+    case "rejected":
+      return "Bị từ chối";
+    case "refunded":
+      return "Đã hoàn tiền";
+    default:
+      return "-";
+  }
+};
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "unpaid":
+      return "orange";
+    case "pending":
+      return "blue";
+    case "approved":
+      return "green";
+    case "rejected":
+      return "red";
+    case "refunded":
+      return "purple";
+    default:
+      return "grey";
+  }
+};
 
 function prepareRenewal() {
-  const current = parseISO(currentEndDate);
+  let current;
+
+  if (renewalData.value.length > 0 && renewalData.value[0]?.endDate) {
+    current = parseISO(renewalData.value[0].endDate);
+  } else if (student.value?.endDate) {
+    current = parseISO(student.value.endDate);
+  } else {
+    console.warn("Không có endDate để tính gia hạn");
+    return;
+  }
+
   const nextMonthDate = addMonths(current, 1);
   nextRenewalMonth.value = format(nextMonthDate, "MM/yyyy");
-  nextStartDate.value = format(startOfMonth(nextMonthDate), "dd/MM/yyyy");
-  nextEndDate.value = format(endOfMonth(nextMonthDate), "dd/MM/yyyy");
+  nextStartDate.value = format(startOfMonth(nextMonthDate), "yyyy-MM-dd");
+  nextEndDate.value = format(endOfMonth(nextMonthDate), "yyyy-MM-dd");
+
   showDialog.value = true;
 }
 
-function confirmRenewal() {
-  renewalData.value.push({
-    month: nextRenewalMonth.value,
-    startDate: nextStartDate.value,
-    endDate: nextEndDate.value,
-    paidAt: null,
-    status: null,
-    note: null,
-  });
+const confirmRenewal = async () => {
+  await onActionCreateRenewal(student.value._id);
   showDialog.value = false;
-}
+  await fetchRenewalRequests(); // reload danh sách
 
-function handlePayment(rowIndex) {
-  const now = new Date();
-  renewalData.value[rowIndex].paidAt = format(now, "dd/MM/yyyy");
-  renewalData.value[rowIndex].status = "Đang chờ duyệt";
-  renewalData.value[rowIndex].note = "";
-}
+  // Hiển thị snackbar
+  snackbarMessage.value = "Gửi yêu cầu gia hạn thành công!";
+  snackbarColor.value = "success";
+  snackbar.value = true;
+};
+
+const handlePayment = async (item) => {
+  // console.log(item);
+  await onActionCreateVnpayUrl(item._id).then((res) => {
+    window.location.href = res.data?.paymentUrl;
+  });
+};
+
+onMounted(fetchRenewalRequests);
 </script>
 
 <template>
-  <v-container>
-    <v-row class="mb-4">
-      <v-col cols="12">
-        <v-card class="pa-4" elevation="2">
-          <div class="text-center text-h5 font-weight-bold text-blue-darken-3">
-            Gia hạn thuê Khu {{ building }} - Phòng {{ room }}
-          </div>
-          <div class="text-center text-body-2 text-blue-grey-darken-1">
-            Danh sách các tháng đã và cần gia hạn, trạng thái, ghi chú và thanh
-            toán
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
+  <v-container class="pa-0">
+    <v-btn
+      prepend-icon="mdi-arrow-left"
+      variant="outlined"
+      color="primary"
+      class="mb-4"
+      to="/room-info"
+    >
+      Quay lại
+    </v-btn>
+
+    <v-card class="mb-4">
+      <v-card-title
+        class="text-center text-h5 font-weight-bold text-blue-darken-3"
+      >
+        Gia hạn thuê Phòng
+        {{ student?.registration?.room?.room }} - Khu
+        {{ student?.registration?.room?.building?.name }}
+      </v-card-title>
+      <v-card-subtitle class="text-center text-body-2 text-blue-grey-darken-1">
+        Danh sách các tháng đã và cần gia hạn, trạng thái, ghi chú và thanh toán
+      </v-card-subtitle>
+    </v-card>
 
     <v-card>
-      <v-col class="">
+      <v-card-text>
         <v-btn
           color="primary"
-          elevation="0"
-          prepend-icon="mdi mdi-plus-circle-outline"
+          prepend-icon="mdi-plus-circle-outline"
           @click="prepareRenewal"
-          >Yêu cầu gia hạn thuê</v-btn
         >
-      </v-col>
-      <v-card-text>
-        <v-table>
-          <thead>
-            <tr>
-              <th class="text-center">Tháng</th>
-              <th class="text-center">Bắt đầu</th>
-              <th class="text-center">Kết thúc</th>
-              <th class="text-center">Ngày thanh toán</th>
-              <th class="text-center">Trạng thái</th>
-              <th>Ghi chú</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in renewalData" :key="index">
-              <td>{{ item.month }}</td>
-              <td>{{ item.startDate }}</td>
-              <td>{{ item.endDate }}</td>
-              <td>
-                <v-btn
-                  v-if="!item.paidAt"
-                  color="primary"
-                  elevation="0"
-                  @click="handlePayment(index)"
-                >
-                  Thanh toán
-                </v-btn>
-                <span v-else>{{ item.paidAt }}</span>
-              </td>
-              <td>{{ item.status || "-" }}</td>
-              <td>{{ item.note || "-" }}</td>
-            </tr>
-          </tbody>
-        </v-table>
+          Yêu cầu gia hạn thuê
+        </v-btn>
+
+        <v-divider class="my-4" />
+
+        <v-data-table
+          :headers="headers"
+          :items="renewalData"
+          class="elevation-1"
+        >
+          <template #item.index="{ index }">
+            {{ index + 1 }}
+          </template>
+          <template #item.month="{ item }">
+            {{ String(item.month).padStart(2, "0") }} / {{ item.year }}
+          </template>
+          <template #item.status="{ item }">
+            <v-chip :color="getStatusColor(item.status)" dark>
+              {{ formatStatus(item.status) }}
+            </v-chip>
+          </template>
+
+          <template #item.notes="{ item }">
+            {{ item.notes || "-" }}
+          </template>
+          <template #item.action="{ item }">
+            <v-btn
+              size="small"
+              elevation="0"
+              color="primary"
+              @click="handlePayment(item)"
+            >
+              Thanh toán
+            </v-btn>
+          </template>
+
+          <template v-slot:no-data>
+            <div class="pa-7">
+              <i class="mdi mdi-file-remove text-h2 text-grey-lighten-1"></i>
+              <p
+                class="text-center text-muted font-italic text-subtitle-1 text-red-lighten-1"
+              >
+                Bạn chưa có yêu cầu gia hạn thuê phòng nào!
+              </p>
+            </div>
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
 
-    <!-- Dialog xác nhận gia hạn -->
     <v-dialog v-model="showDialog" max-width="400">
       <v-card>
         <v-card-title class="text-h6">Gia hạn thuê phòng</v-card-title>
-        <hr />
+        <v-divider></v-divider>
         <v-card-text>
           Bạn muốn gia hạn thuê phòng cho:<br /><br />
           <strong>Tháng:</strong> {{ nextRenewalMonth }}<br />
           <strong>Tiền thuê:</strong>
-          {{ rentPrice.toLocaleString("vi-VN") }} VNĐ
+          {{
+            student?.registration?.room?.price?.toLocaleString("vi-VN") || "-"
+          }}
+          VNĐ
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn text @click="showDialog = false">Hủy</v-btn>
           <v-btn color="primary" @click="confirmRenewal">Xác nhận</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
+
+  <!-- Snackbar -->
+  <v-snackbar
+    v-model="snackbar"
+    :color="snackbarColor"
+    timeout="3000"
+    location="top right"
+  >
+    {{ snackbarMessage }}
+  </v-snackbar>
 </template>
 
 <style scoped>
-th,
-td {
-  text-align: center;
+.v-chip {
+  font-size: 12px;
+  margin: 0 !important;
+  padding: 2px 8px !important;
 }
 </style>

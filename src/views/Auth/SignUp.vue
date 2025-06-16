@@ -14,22 +14,32 @@ const loading = ref(false);
 const fullname = ref(null);
 const terms = ref(false);
 const termsError = ref(false);
+const confirmPassword = ref(null);
+const confirmPasswordError = ref("");
 
 function onSubmit() {
   if (!form.value) return;
 
   // Kiểm tra nếu chưa đồng ý điều khoản
   if (!terms.value) {
-    termsError.value = true; // Bật lỗi
+    termsError.value = true;
     loading.value = false;
-    return; // Dừng lại nếu chưa đồng ý
+    return;
   } else {
-    termsError.value = false; // Tắt lỗi nếu đã đồng ý
+    termsError.value = false;
   }
 
-  setTimeout(() => (loading.value = false), 2000);
+  // Kiểm tra xác nhận mật khẩu
+  if (password.value !== confirmPassword.value) {
+    confirmPasswordError.value = "Mật khẩu xác nhận không khớp!";
+    loading.value = false;
+    return;
+  } else {
+    confirmPasswordError.value = "";
+  }
 
-  // Lấy dữ liệu từ các ref
+  loading.value = true;
+
   const values = {
     fullname: fullname.value,
     email: email.value,
@@ -39,9 +49,7 @@ function onSubmit() {
 
   onActionSignUp(values)
     .then((res) => {
-      console.log(res);
       loading.value = false;
-
       if (res.status === 201) {
         router.push({ name: "SignIn" });
       }
@@ -66,7 +74,7 @@ const togglePassword = () => {
 <template>
   <v-container fluid class="fill-height pa-0 ma-0">
     <v-img
-      src="http://oldquarterviewhanoihostel.com/images/upload/2092023114544ATU03653.jpg"
+      src="/public/images/sign-in-background.jpg"
       class="background"
       cover
       height="100vh"
@@ -112,6 +120,24 @@ const togglePassword = () => {
                 @click:append-inner="togglePassword"
               ></v-text-field>
 
+              <v-text-field
+                v-model="confirmPassword"
+                :readonly="loading"
+                :rules="[required]"
+                :type="showPassword ? 'text' : 'password'"
+                label="Xác nhận mật khẩu"
+                placeholder="Nhập lại mật khẩu"
+                color="primary"
+                variant="underlined"
+                :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+                @click:append-inner="togglePassword"
+              />
+
+              <!-- Hiển thị lỗi nếu mật khẩu không khớp -->
+              <span v-if="confirmPasswordError" class="text-red">
+                {{ confirmPasswordError }}
+              </span>
+
               <v-checkbox
                 v-model="terms"
                 color="secondary"
@@ -130,7 +156,7 @@ const togglePassword = () => {
                 color="blue"
                 size="large"
                 type="submit"
-                variant="elevated"
+                elevation="0"
                 block
               >
                 Sign Up
@@ -161,8 +187,8 @@ const togglePassword = () => {
 
 <style scoped>
 .glass-card {
-  backdrop-filter: blur(15px);
-  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

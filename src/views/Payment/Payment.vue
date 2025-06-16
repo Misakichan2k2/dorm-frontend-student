@@ -38,19 +38,16 @@ const goInvoice = () => {
           {{
             success
               ? "Cảm ơn bạn! Chúng tôi đã nhận được thanh toán. Một bản sao hóa đơn đã được gửi tới email của bạn."
-              : "Thanh toán không thành công. Vui lòng thử lại hoặc liên hệ quản trị viên để được hỗ trợ."
+              : "Thanh toán không thành công. Vui lòng thử lại hoặc liên hệ ban quản lý để được hỗ trợ."
           }}
         </p>
 
         <v-divider class="my-6"></v-divider>
 
         <div class="d-flex justify-center ga-4">
-          <v-btn color="primary" elevation="0" @click="goInvoice"
-            >Trang hóa đơn</v-btn
-          >
-          <v-btn color="primary" variant="outlined" @click="goInvoice"
-            >Thử lại</v-btn
-          >
+          <v-btn color="primary" elevation="0" @click="goInvoice">
+            {{ success ? "Trang hóa đơn" : "Thử lại" }}
+          </v-btn>
         </div>
       </div>
     </v-card>

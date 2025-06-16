@@ -15,20 +15,35 @@ class ApiRoomInfo {
     });
   };
 
-  // Create
-  createRenewal = async (data) => {
+  getMyRenewalRequestByRoom = async () => {
     return await AxiosInstance({
-      method: "POST",
-      url: "renewals",
-      data,
+      method: "GET",
+      url: "/renewals/my-renewals",
     });
   };
 
-  createVnpayUrl = async (data) => {
+  // Create
+  createRenewal = async (student) => {
+    return await AxiosInstance({
+      method: "POST",
+      url: "renewals",
+      data: { student },
+    });
+  };
+
+  createVnpayUrlRegistration = async (data) => {
     return await AxiosInstance({
       method: "POST",
       url: `payments/create-registration-vnpay-payment`,
       data,
+    });
+  };
+
+  createVnpayUrl = async (renewalRequestId) => {
+    return await AxiosInstance({
+      method: "POST",
+      url: `payments/create_payment_url`,
+      data: { renewalRequestId },
     });
   };
 }

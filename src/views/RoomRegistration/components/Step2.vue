@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import { format } from "date-fns";
 import { STORE_REGISTRATION } from "@/services/stores";
 
@@ -17,6 +17,7 @@ const search = ref("");
 const selectedGender = ref("Tất cả");
 const selectedBuilding = ref("Tất cả");
 const availableSeats = ref("");
+const formSection = ref(null);
 
 const headers = [
   { align: "center", key: "no", sortable: true, title: "STT" },
@@ -66,9 +67,12 @@ for (let i = 0; i < 2; i++) {
 }
 
 // Bấm nút "Chọn"
-const selectRoom = (room) => {
+const selectRoom = async (room) => {
   selectedRoom.value = room;
-  selectedMoveIn.value = null; // reset chọn tháng
+  selectedMoveIn.value = null;
+
+  await nextTick();
+  formSection.value?.scrollIntoView({ behavior: "smooth" });
 };
 
 // Bấm nút "Xác nhận đăng ký" (sau khi chọn tháng)
@@ -81,6 +85,8 @@ const confirmSelection = () => {
   selectedItem.value = selectedRoom.value;
   dialog.value = true;
 };
+
+const emit = defineEmits(["confirm-success"]);
 
 const confirmRegister = () => {
   const id = selectedItem.value._id;
@@ -103,6 +109,8 @@ const confirmRegister = () => {
   };
 
   dialog.value = false;
+
+  emit("confirm-success");
 };
 
 const buildingOptions = computed(() => [
@@ -282,7 +290,7 @@ defineExpose({ data });
     </v-card>
 
     <!-- UI chọn tháng năm chỉ hiện khi đã chọn phòng -->
-    <div v-if="selectedRoom" style="margin-top: 20px">
+    <div v-if="selectedRoom" ref="formSection" style="margin-top: 20px">
       <v-card class="pa-5 mt-3" style="border-left: 5px solid #0066cc">
         <div class="mb-4">
           <strong>Phòng đã chọn:</strong> {{ selectedRoom.room }} -

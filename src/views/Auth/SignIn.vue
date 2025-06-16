@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { STORE_AUTH } from "@/services/stores";
 import { appLocalStorage, ENUM, COMMON } from "@/utils";
 
-const { onActionSignIn } = STORE_AUTH.StoreAuth();
+const { onActionSignIn, onActionHasRegistration } = STORE_AUTH.StoreAuth();
 
 const router = useRouter();
 
@@ -23,11 +23,27 @@ async function onSubmit() {
     email: email.value,
     password: password.value,
   })
-    .then((res) => {
+    .then(async (res) => {
       appLocalStorage.value.userData = res?.data || ENUM.USER_DATA;
       appLocalStorage.value.accessToken = res?.data?.token || "";
 
-      router.push("/room-registration");
+      await onActionHasRegistration().then((res) => {
+        if (res?.data?.hasRegistration) {
+          appLocalStorage.value.userData = {
+            ...appLocalStorage.value.userData,
+            hasRegistration: res?.data?.hasRegistration,
+          };
+
+          router.push("/profile");
+        } else {
+          appLocalStorage.value.userData = {
+            ...appLocalStorage.value.userData,
+            hasRegistration: res?.data?.hasRegistration,
+          };
+
+          router.push("/room-registration");
+        }
+      });
     })
     .finally(() => {
       loading.value = false;
@@ -47,11 +63,7 @@ const togglePassword = () => {
 
 <template>
   <v-container fluid class="fill-height pa-0 ma-0">
-    <v-img
-      src="http://oldquarterviewhanoihostel.com/images/upload/2092023114544ATU03653.jpg"
-      cover
-      height="100vh"
-    >
+    <v-img src="/public/images/sign-in-background.jpg" cover height="100vh">
       <v-row align="center" justify="center" style="height: 100%">
         <v-col cols="12" sm="8" md="6" lg="4">
           <v-card class="mx-auto px-6 py-8 glass-card" max-width="344">
@@ -96,7 +108,7 @@ const togglePassword = () => {
                 color="blue"
                 size="large"
                 type="submit"
-                variant="elevated"
+                elevation="0"
                 block
               >
                 Đăng nhập
@@ -127,8 +139,8 @@ const togglePassword = () => {
 
 <style scoped>
 .glass-card {
-  backdrop-filter: blur(15px);
-  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);

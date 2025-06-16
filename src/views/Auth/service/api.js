@@ -23,6 +23,21 @@ class ApiAuth {
       },
     });
   };
+
+  hasRegistration = async () => {
+    return await AxiosInstance({
+      method: "GET",
+      url: "registration/hasRegistration",
+    });
+  };
+
+  changePassword = async (data) => {
+    return await AxiosInstance({
+      method: "PUT",
+      url: "auth/change-password",
+      data,
+    });
+  };
 }
 
 export const API_AUTH = new ApiAuth();

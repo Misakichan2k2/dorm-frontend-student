@@ -11,4 +11,10 @@ export default [
     meta: { publicPage: true },
     component: () => import("../SignUp.vue"),
   },
+  {
+    path: "/change-password",
+    name: "ChangePassword",
+    meta: { publicPage: true },
+    component: () => import("../ChangePassword.vue"),
+  },
 ];

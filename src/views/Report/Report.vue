@@ -33,8 +33,10 @@ const rules = {
 
 const isFormValid = computed(() => {
   return (
-    reportTitle.value && reportDescription.value && reportCategory.value
-    // && reportImage.value
+    reportTitle.value &&
+    reportDescription.value &&
+    reportCategory.value &&
+    reportImage.value
   );
 });
 
@@ -93,24 +95,24 @@ const cancelReport = (reportId) => {
     });
 };
 
-// submit form
 const submitForm = () => {
   if (!isFormValid.value) return;
 
-  const data = {
-    title: reportTitle.value,
-    description: reportDescription.value,
-    category: reportCategory.value,
-    // image: null, // chưa cần
-  };
+  const formData = new FormData();
+  formData.append("title", reportTitle.value);
+  formData.append("description", reportDescription.value);
+  formData.append("category", reportCategory.value);
+  if (reportImage.value) {
+    formData.append("image", reportImage.value);
+  }
 
-  STORE_REPORT.StoreReport()
-    .onActionCreateReport(data)
+  onActionCreateReport(formData)
     .then(() => {
       newReportDialog.value = false;
       reportTitle.value = "";
       reportDescription.value = "";
       reportCategory.value = null;
+      reportImage.value = null;
 
       snackbarMessage.value = "Tạo báo cáo thành công";
       snackbarColor.value = "success";
@@ -132,7 +134,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <v-container>
+  <v-container class="pa-0">
     <!-- Header Section -->
     <v-row class="mb-4">
       <v-col cols="12" class="text-center">
@@ -227,41 +229,6 @@ onMounted(async () => {
                 {{ item.status }}
               </v-chip>
             </td>
-            <!-- <td class="text-center">
-              <v-btn
-                v-if="item.status === 'Chờ xử lý'"
-                color="red-darken-2"
-                size="small"
-                elevation="0"
-                variant="outlined"
-                @click="activeMenuId = item._id"
-              >
-                Hủy đơn
-              </v-btn>
-
-              <v-card
-                v-if="activeMenuId === item._id"
-                min-width="300"
-                class="pa-2"
-              >
-                <v-card-text class="text-center text-body-1 font-weight-medium">
-                  Bạn có muốn hủy đơn báo cáo không?
-                </v-card-text>
-
-                <v-divider></v-divider>
-
-                <v-card-actions class="justify-end">
-                  <v-btn variant="text"> Không </v-btn>
-                  <v-btn
-                    color="error"
-                    variant="text"
-                    @click="cancelReport(item._id)"
-                  >
-                    Xác nhận
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </td> -->
             <td class="text-center">
               <v-menu
                 v-if="item.status === 'Chờ xử lý'"

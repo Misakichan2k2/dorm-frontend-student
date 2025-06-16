@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch, onMounted } from "vue";
+import { computed, ref, watch } from "vue";
 import provincesData from "@/data/province";
 import districtsData from "@/data/districts";
 import wardsData from "@/data/ward";
@@ -44,6 +44,7 @@ const filteredWards = computed(() =>
 const rules = {
   required: (v) => !!v || "Trường này là bắt buộc",
   phone: (v) => /^\d{10}$/.test(v) || "Số điện thoại phải có 10 số",
+  email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || "Email không hợp lệ",
 };
 
 const form = ref(null);
@@ -258,7 +259,7 @@ watch(
             <span>Email <span class="text-red-darken-4">*</span></span>
             <v-text-field
               v-model="formData.email"
-              :rules="[rules.required]"
+              :rules="[rules.required, rules.email]"
               placeholder="Nhập email"
               type="email"
               variant="outlined"

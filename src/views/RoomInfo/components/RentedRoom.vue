@@ -2,9 +2,11 @@
 import { ref, computed, onMounted } from "vue";
 import { format } from "date-fns";
 import { STORE_ROOM_INFO } from "@/services/stores";
+import { useRouter } from "vue-router";
 
 const { onActionGetMyRentedRoom } = STORE_ROOM_INFO.StoreRoomInfo();
 
+const router = useRouter();
 const rooms = ref([]);
 
 const filter = ref({
@@ -62,6 +64,10 @@ const filteredRooms = computed(() => {
     return matchesBuilding && matchesRoomNumber && matchesDate;
   });
 });
+
+const renewalRequest = () => {
+  router.push(`/room-info/renew-rental`);
+};
 
 onMounted(async () => {
   await onActionGetMyRentedRoom().then((res) => {
@@ -154,7 +160,7 @@ onMounted(async () => {
       </div>
 
       <!-- Hiển thị danh sách phòng nếu có phòng thỏa điều kiện -->
-      <v-row v-else>
+      <v-row dense v-else>
         <v-col v-for="room in filteredRooms" :key="room.id" cols="12" md="6">
           <v-card class="mb-3">
             <v-card-title>
@@ -164,8 +170,8 @@ onMounted(async () => {
             </v-card-title>
             <v-card-subtitle>
               <span class="text-muted">
-                {{ format(new Date(room.startDate), "dd/MM/yyyy") }} -
-                {{ format(new Date(room.endDate), "dd/MM/yyyy") }}
+                {{ formatDate(room.startDate) }} -
+                {{ formatDate(room.endDate) }}
               </span>
             </v-card-subtitle>
             <v-card-text>
@@ -177,7 +183,7 @@ onMounted(async () => {
                 class="ml-3"
                 color="primary"
                 elevation="0"
-                to="/room-info/renew-rental"
+                @click="renewalRequest(room)"
               >
                 Gia hạn thuê
               </v-btn>
@@ -188,6 +194,10 @@ onMounted(async () => {
                   >Thành viên cùng phòng</v-expansion-panel-title
                 >
                 <v-expansion-panel-text>
+                  <span v-if="room.status === 'Đã trả'" class="text-grey"
+                    >(Bạn đã trả phòng. Thông tin bạn cùng phòng gần nhất sẽ
+                    được hiển thị.)</span
+                  >
                   <v-list>
                     <v-list-item
                       v-for="member in room.roommates"

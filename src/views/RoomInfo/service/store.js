@@ -20,15 +20,36 @@ export const StoreRoomInfo = defineStore("StoreRoomInfo", () => {
     });
   };
 
-  const onActionCreateVnpayUrl = async (data) => {
+  const onActionGetMyRenewals = async () => {
     return await setup({
-      apiFunction: API.createVnpayUrl(data),
+      apiFunction: API.getMyRenewalRequestByRoom(),
+    });
+  };
+
+  const onActionCreateRenewal = async (student) => {
+    return await setup({
+      apiFunction: API.createRenewal(student),
+    });
+  };
+
+  const onActionCreateVnpayUrlRegistration = async (renewalRequestId) => {
+    return await setup({
+      apiFunction: API.createVnpayUrlRegistration(renewalRequestId),
+    });
+  };
+
+  const onActionCreateVnpayUrl = async (renewalRequestId) => {
+    return await setup({
+      apiFunction: API.createVnpayUrl(renewalRequestId),
     });
   };
 
   return {
     onActionGetMyRentedRoom,
     onActionGetMyRoomRequest,
+    onActionGetMyRenewals,
+    onActionCreateRenewal,
+    onActionCreateVnpayUrlRegistration,
     onActionCreateVnpayUrl,
   };
 });

@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { format } from "date-fns";
 import { STORE_ROOM_INFO } from "@/services/stores";
 
-const { onActionGetMyRoomRequest, onActionCreateVnpayUrl } =
+const { onActionGetMyRoomRequest, onActionCreateVnpayUrlRegistration } =
   STORE_ROOM_INFO.StoreRoomInfo();
 
 const registrations = ref([]);
@@ -58,29 +58,15 @@ const getStatusLabel = (status) => {
   }
 };
 
-// const handlePayment = async () => {
-//   try {
-//     const res = await onActionCreateVnpayUrl(registration._id);
-//     // Redirect sang URL thanh toán từ VNPAY
-//     if (res?.data?.vnpUrl) {
-//       window.location.href = res.data.vnpUrl;
-//     } else {
-//       console.warn("Không nhận được URL thanh toán");
-//     }
-//   } catch (error) {
-//     console.error("Lỗi khi tạo thanh toán:", error);
-//   }
-// };
-
 const handlePayment = async (registration) => {
   try {
-    const res = await onActionCreateVnpayUrl({
+    const res = await onActionCreateVnpayUrlRegistration({
       registrationId: registration._id,
     });
 
     const paymentUrl = res.data?.paymentUrl;
     if (paymentUrl) {
-      window.open(paymentUrl, "_blank");
+      window.location.href = res.data?.paymentUrl;
     } else {
       console.error("Không nhận được URL thanh toán từ server");
     }
