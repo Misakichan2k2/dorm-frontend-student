@@ -32,10 +32,31 @@ export const StoreAuth = defineStore("StoreAuth", () => {
     });
   };
 
+  const onActionVerifyEmail = async (token) => {
+    return await setup({
+      apiFunction: API.verifyEmail(token),
+    });
+  };
+
+  const onActionForgetPassword = async (email) => {
+    return await setup({
+      apiFunction: API.forgetPassword(email),
+    });
+  };
+
+  const onActionResetPassword = async (data) => {
+    return await setup({
+      apiFunction: API.resetPassword(data),
+    });
+  };
+
   return {
     onActionSignIn,
     onActionSignUp,
     onActionHasRegistration,
     onActionChangePassword,
+    onActionVerifyEmail,
+    onActionForgetPassword,
+    onActionResetPassword,
   };
 });

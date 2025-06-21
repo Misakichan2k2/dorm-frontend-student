@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { STORE_AUTH } from "@/services/stores";
+// const { onActionSetPopupMessage } = appStore();
+import PopupMessage from "@/components/PopupMessage.vue";
 
 const { onActionSignUp } = STORE_AUTH.StoreAuth();
 
@@ -16,6 +18,7 @@ const terms = ref(false);
 const termsError = ref(false);
 const confirmPassword = ref(null);
 const confirmPasswordError = ref("");
+const showVerifyEmailDialog = ref(false);
 
 function onSubmit() {
   if (!form.value) return;
@@ -51,7 +54,7 @@ function onSubmit() {
     .then((res) => {
       loading.value = false;
       if (res.status === 201) {
-        router.push({ name: "SignIn" });
+        showVerifyEmailDialog.value = true;
       }
     })
     .catch((error) => {
@@ -72,6 +75,7 @@ const togglePassword = () => {
 </script>
 
 <template>
+  <PopupMessage />
   <v-container fluid class="fill-height pa-0 ma-0">
     <v-img
       src="/public/images/sign-in-background.jpg"
@@ -183,6 +187,25 @@ const togglePassword = () => {
       </v-row>
     </v-img>
   </v-container>
+
+  <!-- Dialog -->
+  <template>
+    <v-dialog v-model="showVerifyEmailDialog" width="auto" persistent>
+      <v-card>
+        <v-card-title class="text-h6">Đăng ký thành công</v-card-title>
+        <v-card-text>
+          Vui lòng kiểm tra email của bạn để xác thực tài khoản. Liên kết xác
+          thực chỉ có hiệu lực trong vòng 1 giờ.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn color="primary" @click="router.push({ name: 'SignIn' })">
+            OK
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </template>
 </template>
 
 <style scoped>

@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { STORE_AUTH } from "@/services/stores";
-import { appLocalStorage, ENUM, COMMON } from "@/utils";
+import { appLocalStorage, ENUM } from "@/utils";
 
 const { onActionSignIn, onActionHasRegistration } = STORE_AUTH.StoreAuth();
 
@@ -66,50 +66,71 @@ const togglePassword = () => {
     <v-img src="/public/images/sign-in-background.jpg" cover height="100vh">
       <v-row align="center" justify="center" style="height: 100%">
         <v-col cols="12" sm="8" md="6" lg="4">
-          <v-card class="mx-auto px-6 py-8 glass-card" max-width="344">
-            <v-form ref="formRef" @submit.prevent="onSubmit">
-              <div class="text-center mb-8">
-                <span class="font-weight-bold text-h5">Đăng nhập</span>
+          <v-card class="mx-auto px-6 glass-card" max-width="385">
+            <v-form
+              ref="formRef"
+              @submit.prevent="onSubmit"
+              class="px-4 py-6"
+              style="max-width: 420px; margin: auto"
+            >
+              <div class="text-center mb-6">
+                <v-icon size="48" color="primary" class="mb-2"
+                  >mdi-account-circle</v-icon
+                >
+                <v-col class="font-weight-bold text-h5"
+                  >Đăng nhập sinh viên</v-col
+                >
+                <v-card-subtitle class="text-grey">
+                  Sử dụng email và mật khẩu để đăng nhập
+                </v-card-subtitle>
               </div>
+
               <v-text-field
                 v-model="email"
                 :readonly="loading"
                 :rules="[required]"
-                class="mb-2"
                 label="Email"
+                placeholder="example@student.edu.vn"
+                type="email"
+                variant="outlined"
                 color="primary"
-                clearable
-              ></v-text-field>
+                prepend-inner-icon="mdi-email-outline"
+                class="mb-4"
+              />
 
               <v-text-field
                 v-model="password"
                 :readonly="loading"
                 :rules="[required]"
                 :type="showPassword ? 'text' : 'password'"
-                label="Password"
+                label="Mật khẩu"
+                placeholder="Nhập mật khẩu"
+                variant="outlined"
                 color="primary"
-                placeholder="Enter your password"
+                prepend-inner-icon="mdi-lock-outline"
                 :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 @click:append-inner="togglePassword"
-              ></v-text-field>
+              />
 
-              <v-row justify="end">
+              <v-row justify="end" class="mb-3">
                 <v-col cols="auto">
-                  <span class="text-primary custom-link cursor-pointer"
-                    >Quên mật khẩu?</span
+                  <router-link
+                    class="text-primary text-decoration-none font-weight-medium"
+                    to="/forgot-password"
                   >
+                    <span class="custom-link">Quên mật khẩu?</span>
+                  </router-link>
                 </v-col>
               </v-row>
 
-              <br />
-
               <v-btn
                 :loading="loading"
-                color="blue"
+                block
+                color="primary"
                 size="large"
                 type="submit"
-                elevation="0"
-                block
+                elevation="2"
+                class="font-weight-bold"
               >
                 Đăng nhập
               </v-btn>
@@ -117,7 +138,7 @@ const togglePassword = () => {
 
             <v-row
               justify="center"
-              class="mt-5"
+              class="mt-1"
               style="flex-direction: row; gap: 0.2rem"
             >
               <span>Chưa có tài khoản?</span>

@@ -14,7 +14,24 @@ export default [
   {
     path: "/change-password",
     name: "ChangePassword",
-    meta: { publicPage: true },
     component: () => import("../ChangePassword.vue"),
+  },
+  {
+    path: "/verify-email",
+    name: "VerifyEmail",
+    meta: { publicPage: true },
+    component: () => import("../VerifyEmail.vue"),
+  },
+  {
+    path: "/forgot-password",
+    name: "ForgotPassword",
+    meta: { publicPage: true },
+    component: () => import("../ForgetPassword.vue"),
+  },
+  {
+    path: "/reset-password",
+    name: "ResetPassword",
+    meta: { publicPage: true },
+    component: () => import("../ResetPassword.vue"),
   },
 ];

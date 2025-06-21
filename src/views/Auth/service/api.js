@@ -38,6 +38,29 @@ class ApiAuth {
       data,
     });
   };
+
+  verifyEmail = async (token) => {
+    return await AxiosInstance({
+      method: "GET",
+      url: `auth/verify-email?token=${token}`,
+    });
+  };
+
+  forgetPassword = async (email) => {
+    return await AxiosInstance({
+      method: "GET",
+      url: "auth/forgot-password",
+      params: { email },
+    });
+  };
+
+  resetPassword = async ({ token, newPassword }) => {
+    return await AxiosInstance({
+      method: "POST",
+      url: `auth/reset-password`,
+      data: { token, newPassword },
+    });
+  };
 }
 
 export const API_AUTH = new ApiAuth();
