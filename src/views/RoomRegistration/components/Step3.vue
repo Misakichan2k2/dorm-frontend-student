@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { STORE_REGISTRATION } from "@/services/stores";
 
 const { onActionCreateVnpayUrl } = STORE_REGISTRATION.StoreRegistration();
@@ -10,6 +11,7 @@ const props = defineProps({
   },
 });
 
+const router = useRouter();
 const agreed = ref(false);
 
 const handlePayment = async () => {
@@ -20,7 +22,10 @@ const handlePayment = async () => {
 
     window.location.href = res.data?.paymentUrl;
   });
-  // cái này phải lấy _id của get
+};
+
+const handlePayLater = () => {
+  router.push("/room-info");
 };
 
 const formatCurrency = (value) => {
@@ -102,15 +107,36 @@ const formatCurrency = (value) => {
       class="mb-4"
     ></v-checkbox>
 
-    <div class="d-flex justify-center">
+    <div
+      class="d-flex flex-column align-center justify-center"
+      style="max-width: 480px; width: 100%; margin: auto"
+    >
       <v-btn
         :disabled="!agreed"
-        color="primary"
+        color="blue-darken-2"
         size="large"
-        style="max-width: 500px; width: 100%"
+        block
+        class="mb-3"
+        elevation="2"
         @click="handlePayment"
       >
+        <v-icon start>mdi-credit-card-outline</v-icon>
         Thanh toán bằng VNPAY
+      </v-btn>
+
+      <div class="text-caption text-grey mb-3" style="font-weight: 500">
+        — hoặc —
+      </div>
+
+      <v-btn
+        color="grey-lighten-3"
+        size="large"
+        block
+        elevation="1"
+        @click="handlePayLater"
+      >
+        <v-icon start>mdi-clock-outline</v-icon>
+        Thanh toán sau
       </v-btn>
     </div>
   </v-container>

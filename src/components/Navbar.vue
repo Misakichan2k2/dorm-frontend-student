@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { appLocalStorage, onDeleteAppLocalStorage } from "@/utils";
 
 const drawer = ref(true);
-const rail = ref(false);
+const rail = ref(true);
 
 const toggleRail = () => {
   rail.value = !rail.value;

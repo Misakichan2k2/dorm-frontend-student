@@ -198,20 +198,26 @@ onMounted(async () => {
                     >(Bạn đã trả phòng. Thông tin bạn cùng phòng gần nhất sẽ
                     được hiển thị.)</span
                   >
-                  <v-list>
-                    <v-list-item
-                      v-for="member in room.roommates"
-                      :key="member.studentId"
-                    >
-                      <v-list-item-title>
-                        {{ member.name }} - {{ member.studentId }}
-                      </v-list-item-title>
-                      <v-list-item-subtitle>
-                        {{ member.school }} - {{ member.class }} -
-                        {{ member.course }}
-                      </v-list-item-subtitle>
-                    </v-list-item>
-                  </v-list>
+                  <div v-if="room.roommates && room.roommates.length > 0">
+                    <v-list>
+                      <v-list-item
+                        v-for="member in room.roommates"
+                        :key="member.studentId"
+                      >
+                        <v-list-item-title>
+                          {{ member.name }} - {{ member.studentId }}
+                        </v-list-item-title>
+                        <v-list-item-subtitle>
+                          {{ member.school }} - {{ member.class }} -
+                          {{ member.course }}
+                        </v-list-item-subtitle>
+                      </v-list-item>
+                    </v-list>
+                  </div>
+
+                  <div v-else class="text-grey">
+                    Chưa có thành viên cùng phòng.
+                  </div>
                 </v-expansion-panel-text>
               </v-expansion-panel>
             </v-expansion-panels>

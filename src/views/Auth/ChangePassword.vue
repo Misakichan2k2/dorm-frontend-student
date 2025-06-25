@@ -92,6 +92,7 @@ const handleSubmit = async () => {
           type="submit"
           color="primary"
           block
+          size="large"
           class="mt-2"
           :disabled="!valid"
         >

@@ -174,6 +174,7 @@ onMounted(fetchRenewalRequests);
           </template>
           <template #item.action="{ item }">
             <v-btn
+              :disabled="item.status !== 'unpaid'"
               size="small"
               elevation="0"
               color="primary"
@@ -187,7 +188,7 @@ onMounted(fetchRenewalRequests);
             <div class="pa-7">
               <i class="mdi mdi-file-remove text-h2 text-grey-lighten-1"></i>
               <p
-                class="text-center text-muted font-italic text-subtitle-1 text-red-lighten-1"
+                class="text-center text-muted font-italic text-subtitle-1 text-grey-lighten-1"
               >
                 Bạn chưa có yêu cầu gia hạn thuê phòng nào!
               </p>

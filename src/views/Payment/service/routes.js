@@ -9,4 +9,9 @@ export default [
     name: "PaymentRegistration",
     component: () => import("../PaymentRegistration.vue"),
   },
+  {
+    path: "/payment-result-renewal",
+    name: "PaymentRenewal",
+    component: () => import("../PaymentRenewal.vue"),
+  },
 ];

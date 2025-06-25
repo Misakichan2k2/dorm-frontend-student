@@ -121,10 +121,7 @@ const submitForm = () => {
       return fetchReports();
     })
     .catch((error) => {
-      console.error("Lỗi tạo báo cáo:", error);
-      snackbarMessage.value = "Đã xảy ra lỗi khi tạo báo cáo";
-      snackbarColor.value = "error";
-      snackbar.value = true;
+      console.error("Hủy báo cáo thất bại", error);
     });
 };
 

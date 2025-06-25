@@ -175,4 +175,10 @@ const togglePassword = () => {
 .custom-link:hover {
   text-decoration: underline;
 }
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #000 !important;
+}
 </style>
