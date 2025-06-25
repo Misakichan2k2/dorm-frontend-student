@@ -46,6 +46,21 @@ class ApiRoomInfo {
       data: { renewalRequestId },
     });
   };
+
+  getRooms = async () => {
+    return await AxiosInstance({
+      method: "GET",
+      url: "rooms/available",
+    });
+  };
+
+  transferRoom = async (id, data) => {
+    return await AxiosInstance({
+      method: "PUT",
+      url: `registration/${id}`,
+      data,
+    });
+  };
 }
 
 export const API_ROOM_INFO = new ApiRoomInfo();

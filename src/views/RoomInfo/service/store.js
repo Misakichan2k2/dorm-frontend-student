@@ -44,6 +44,18 @@ export const StoreRoomInfo = defineStore("StoreRoomInfo", () => {
     });
   };
 
+  const onActionGetRooms = async () => {
+    return await setup({
+      apiFunction: API.getRooms(),
+    });
+  };
+
+  const onActionTransferRoom = async (id, data) => {
+    return await setup({
+      apiFunction: API.transferRoom(id, data),
+    });
+  };
+
   return {
     onActionGetMyRentedRoom,
     onActionGetMyRoomRequest,
@@ -51,5 +63,7 @@ export const StoreRoomInfo = defineStore("StoreRoomInfo", () => {
     onActionCreateRenewal,
     onActionCreateVnpayUrlRegistration,
     onActionCreateVnpayUrl,
+    onActionGetRooms,
+    onActionTransferRoom,
   };
 });

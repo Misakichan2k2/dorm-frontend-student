@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { format } from "date-fns";
+import { useRouter } from "vue-router";
 import { STORE_ROOM_INFO } from "@/services/stores";
 
 const { onActionGetMyRoomRequest, onActionCreateVnpayUrlRegistration } =
   STORE_ROOM_INFO.StoreRoomInfo();
+
+const router = useRouter();
 
 const registrations = ref([]);
 
@@ -75,6 +78,10 @@ const handlePayment = async (registration) => {
   }
 };
 
+const handleChangeRoom = (registration) => {
+  router.push(`/room-info/room-transfer/${registration._id}`);
+};
+
 onMounted(async () => {
   await onActionGetMyRoomRequest().then((res) => {
     registrations.value = res?.data?.registrations;
@@ -133,28 +140,51 @@ onMounted(async () => {
               >
                 Chi tiết đơn đăng ký
               </v-expansion-panel-title>
+
               <v-expansion-panel-text>
                 <template v-if="registration.status === 'unpaid'">
-                  <div
-                    class="d-flex mb-5 ga-5 align-center justify-space-between"
-                  >
-                    <span style="font-size: 1rem">{{
-                      registration.registerFormDetail
-                    }}</span>
-                    <v-btn
-                      color="blue-darken-2"
-                      @click="handlePayment(registration)"
+                  <div class="d-flex flex-column ga-4">
+                    <!-- Thông tin đơn -->
+                    <span style="font-size: 1rem">
+                      {{ registration.registerFormDetail }}
+                    </span>
+
+                    <!-- Khu vực nút hành động -->
+                    <v-card
+                      class="pa-4"
+                      color="grey-lighten-4"
+                      rounded="lg"
+                      elevation="0"
                     >
-                      Thanh toán ngay
-                    </v-btn>
+                      <div
+                        class="d-flex flex-md-row flex-column ga-4 justify-end"
+                      >
+                        <v-btn
+                          color="blue-darken-2"
+                          variant="flat"
+                          prepend-icon="mdi-cash"
+                          @click="handlePayment(registration)"
+                        >
+                          Thanh toán ngay
+                        </v-btn>
+
+                        <v-btn
+                          color="teal-darken-2"
+                          variant="outlined"
+                          prepend-icon="mdi-home-switch"
+                          @click="handleChangeRoom(registration)"
+                        >
+                          Điều chuyển phòng
+                        </v-btn>
+                      </div>
+                    </v-card>
                   </div>
                 </template>
+
                 <template v-else>
-                  <div>
-                    <span style="font-size: 1rem">{{
-                      registration.registerFormDetail || "Không có ghi chú."
-                    }}</span>
-                  </div>
+                  <span style="font-size: 1rem">
+                    {{ registration.registerFormDetail || "Không có ghi chú." }}
+                  </span>
                 </template>
               </v-expansion-panel-text>
             </v-expansion-panel>

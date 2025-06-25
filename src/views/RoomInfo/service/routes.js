@@ -9,4 +9,9 @@ export default [
     name: "RenewRental",
     component: () => import("../components/Renewal.vue"),
   },
+  {
+    path: "/room-info/room-transfer/:id",
+    name: "TransferRoom",
+    component: () => import("../components/TransferRoom.vue"),
+  },
 ];
