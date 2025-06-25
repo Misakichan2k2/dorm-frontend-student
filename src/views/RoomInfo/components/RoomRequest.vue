@@ -77,8 +77,6 @@ const handlePayment = async (registration) => {
 
 onMounted(async () => {
   await onActionGetMyRoomRequest().then((res) => {
-    console.log(res?.data?.registrations);
-
     registrations.value = res?.data?.registrations;
   });
 });

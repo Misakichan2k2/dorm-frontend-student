@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { STORE_AUTH } from "@/services/stores";
+import { STORE_AUTH, STORE_STUDENT_PROFILE } from "@/services/stores";
 import { appLocalStorage, ENUM } from "@/utils";
 
 const { onActionSignIn, onActionHasRegistration } = STORE_AUTH.StoreAuth();
+const { onActionGetMyProfileRegistration } =
+  STORE_STUDENT_PROFILE.StoreStudentProfile();
 
 const router = useRouter();
 
@@ -29,10 +31,16 @@ async function onSubmit() {
 
       await onActionHasRegistration().then((res) => {
         if (res?.data?.hasRegistration) {
-          appLocalStorage.value.userData = {
-            ...appLocalStorage.value.userData,
-            hasRegistration: res?.data?.hasRegistration,
-          };
+          onActionGetMyProfileRegistration().then((resprofile) => {
+            console.log(resprofile);
+
+            appLocalStorage.value.userData = {
+              ...appLocalStorage.value.userData,
+              hasRegistration: res?.data?.hasRegistration,
+              fullname: resprofile?.data?.data?.fullname,
+              image: resprofile?.data?.data?.image,
+            };
+          });
 
           router.push("/profile");
         } else {

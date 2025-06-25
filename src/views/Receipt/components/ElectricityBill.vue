@@ -71,7 +71,6 @@ const filteredInvoices = computed(() => {
 });
 
 const handlePay = async (item) => {
-  console.log("electricId đã chọn:", item);
   await onActionCreateElectricPaymentURrl({
     electricId: item?._id,
   }).then((res) => {
@@ -81,8 +80,6 @@ const handlePay = async (item) => {
 
 onMounted(async () => {
   await onActionGetMyElectricInvoice().then((res) => {
-    console.log(res?.data);
-
     invoices.value = res?.data;
   });
 });

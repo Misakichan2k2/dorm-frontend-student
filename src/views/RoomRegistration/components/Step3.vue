@@ -18,8 +18,6 @@ const handlePayment = async () => {
   await onActionCreateVnpayUrl({
     registrationId: props?.paymentInfo?._id,
   }).then((res) => {
-    console.log(res);
-
     window.location.href = res.data?.paymentUrl;
   });
 };

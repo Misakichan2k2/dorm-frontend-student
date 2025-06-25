@@ -71,8 +71,6 @@ const renewalRequest = () => {
 
 onMounted(async () => {
   await onActionGetMyRentedRoom().then((res) => {
-    console.log(res?.data);
-
     rooms.value = res?.data;
   });
 });

@@ -71,7 +71,6 @@ const filteredInvoices = computed(() => {
 });
 
 const handlePay = async (item) => {
-  console.log("waterId đã chọn:", item);
   await onActionCreateWaterPaymentURrl({
     waterId: item?._id,
   }).then((res) => {
@@ -81,8 +80,6 @@ const handlePay = async (item) => {
 
 onMounted(async () => {
   await onActionGetMyWaterInvoice().then((res) => {
-    console.log(res?.data);
-
     invoices.value = res?.data;
   });
 });

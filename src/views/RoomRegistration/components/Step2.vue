@@ -98,10 +98,6 @@ const confirmRegister = () => {
 
   const [year, month] = selectedMoveIn.value.split("-");
 
-  console.log("ID đã chọn:", id);
-  console.log("Month đã chọn:", month);
-  console.log("Year đã chọn:", year);
-
   data.value = {
     roomId: id,
     month: Number(month),

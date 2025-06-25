@@ -17,7 +17,6 @@ const isSubmitDisabled = computed(() => {
 });
 
 const submitFeedback = async () => {
-  console.log("submitFeedback được gọi"); // <- kiểm tra xem có log không
   try {
     const payload = {
       title: feedbackTitle.value,

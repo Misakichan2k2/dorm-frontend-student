@@ -106,7 +106,6 @@ const confirmRenewal = async () => {
 };
 
 const handlePayment = async (item) => {
-  // console.log(item);
   await onActionCreateVnpayUrl(item._id).then((res) => {
     window.location.href = res.data?.paymentUrl;
   });

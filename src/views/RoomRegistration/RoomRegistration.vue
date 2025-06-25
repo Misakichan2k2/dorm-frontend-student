@@ -3,8 +3,9 @@ import { computed, ref } from "vue";
 import Step1 from "./components/Step1.vue";
 import Step2 from "./components/Step2.vue";
 import Step3 from "./components/Step3.vue";
-import { STORE_REGISTRATION } from "@/services/stores";
+import { STORE_REGISTRATION, STORE_AUTH } from "@/services/stores";
 import PopupMessage from "@/components/PopupMessage.vue";
+import { appLocalStorage } from "@/utils";
 
 const step2Ref = ref();
 const step = ref(1);
@@ -19,6 +20,7 @@ const items = ["Thông tin cá nhân", "Chọn phòng thuê", "Thanh toán"];
 const { onActionCreateRegistration, onActionGetMyRegistration } =
   STORE_REGISTRATION.StoreRegistration();
 
+const { onActionHasRegistration } = STORE_AUTH.StoreAuth();
 const paymentInfo = ref({});
 
 const step1Data = ref({});
@@ -42,7 +44,19 @@ const onChangeStep = async (event) => {
       }
     });
 
-    await onActionCreateRegistration(formData);
+    await onActionCreateRegistration(formData).then(() => {
+      onActionHasRegistration().then((res) => {
+        onActionGetMyRegistration().then((resprofile) => {
+          console.log(resprofile);
+          appLocalStorage.value.userData = {
+            ...appLocalStorage.value.userData,
+            hasRegistration: res?.data?.hasRegistration,
+            fullname: resprofile?.data?.data?.fullname,
+            image: resprofile?.data?.data?.image,
+          };
+        });
+      });
+    });
 
     const res = await onActionGetMyRegistration();
     paymentInfo.value = res.data.data;

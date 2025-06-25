@@ -12,8 +12,6 @@ export const RESPONSE = () => {
         return data;
       })
       .catch((error) => {
-        console.log(error);
-
         appStore().onActionSetPopupMessage({
           type: "error",
           content: error?.response?.data?.message,

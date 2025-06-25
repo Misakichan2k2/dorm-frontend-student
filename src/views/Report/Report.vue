@@ -71,7 +71,6 @@ const filteredReports = computed(() => {
 
 const fetchReports = async () => {
   await onActionGetMyRoomReport().then((res) => {
-    console.log(res?.data);
     reports.value = res?.data;
   });
 };

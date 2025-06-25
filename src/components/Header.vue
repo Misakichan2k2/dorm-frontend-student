@@ -1,24 +1,12 @@
 <script setup>
-import { ref, onMounted } from "vue";
 import { appLocalStorage } from "@/utils";
-import { STORE_STUDENT_PROFILE } from "@/services/stores";
-
-const { onActionGetMyProfileRegistration } =
-  STORE_STUDENT_PROFILE.StoreStudentProfile();
-const user = ref({});
-
-onMounted(async () => {
-  const res = await onActionGetMyProfileRegistration();
-  user.value = res.data.data;
-});
 </script>
 
 <template>
   <div class="header">
     <div></div>
-    <div class="actions">
+    <div class="actions" v-if="appLocalStorage?.userData?.hasRegistration">
       <v-btn
-        v-if="appLocalStorage?.userData?.hasRegistration"
         prepend-icon="mdi-plus-circle-outline"
         elevation="0"
         color="blue-darken-2"
@@ -27,16 +15,11 @@ onMounted(async () => {
         >Đăng ký phòng</v-btn
       >
 
-      <router-link
-        to="/profile"
-        class="ml-5"
-        style="text-decoration: none"
-        v-if="appLocalStorage?.userData?.hasRegistration"
-      >
+      <router-link to="/profile" class="ml-5" style="text-decoration: none">
         <v-avatar size="35">
-          <v-img :src="user?.image" alt="Avatar"></v-img>
+          <v-img :src="appLocalStorage?.userData?.image" alt="Avatar"></v-img>
         </v-avatar>
-        {{ user?.fullname }}
+        {{ appLocalStorage?.userData?.fullname }}
       </router-link>
     </div>
   </div>

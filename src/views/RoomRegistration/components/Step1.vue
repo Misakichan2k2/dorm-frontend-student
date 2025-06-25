@@ -52,8 +52,6 @@ const form = ref(null);
 watch(
   formData,
   (val) => {
-    console.log(val);
-
     emit("update:modelValue", val);
   },
   { deep: true }
